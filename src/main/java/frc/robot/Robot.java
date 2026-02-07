@@ -36,16 +36,12 @@ public class Robot extends TimedRobot {
 
         builder.addDoubleProperty("Front Left Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontLeft.getTurningPosition()), null);
         builder.addDoubleProperty("Front Left Velocity", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontLeft.getDriveVelocity()), null);
-
         builder.addDoubleProperty("Front Right Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontRight.getTurningPosition()), null);
         builder.addDoubleProperty("Front Right Velocity", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontRight.getDriveVelocity()), null);
-
         builder.addDoubleProperty("Back Left Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.backLeft.getTurningPosition()), null);
         builder.addDoubleProperty("Back Left Velocity", () -> Math.toRadians(RobotContainer.swerveSubsystem.backLeft.getDriveVelocity()), null);
-
         builder.addDoubleProperty("Back Right Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.backRight.getTurningPosition()), null);
         builder.addDoubleProperty("Back Right Velocity", () ->Math.toRadians(RobotContainer.swerveSubsystem.backRight.getDriveVelocity()), null);
-
         builder.addDoubleProperty("Robot Angle", () -> RobotContainer.swerveSubsystem.gyro.getRotation2d().getRadians(), null);
       }
     });

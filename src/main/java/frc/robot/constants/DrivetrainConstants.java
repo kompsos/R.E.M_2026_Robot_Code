@@ -28,8 +28,8 @@ public final class DrivetrainConstants {
   }
 
   public static class SwerveConstants {
-    public static final double trackwidth = edu.wpi.first.math.util.Units.inchesToMeters(28.5); // Distance between right and left wheels
-    public static final double wheelBase = edu.wpi.first.math.util.Units.inchesToMeters(28.5);  // Distance between front and back wheels
+    public static final double trackwidth = edu.wpi.first.math.util.Units.inchesToMeters(27.5); // Distance between right and left wheels
+    public static final double wheelBase = edu.wpi.first.math.util.Units.inchesToMeters(27.5);  // Distance between front and back wheels
     public static boolean fieldOriented = true;
 
     public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
@@ -69,7 +69,7 @@ public final class DrivetrainConstants {
   }
 
     public static final class AutoConstants {
-       public static final double kMaxAngularSpeedRadiansPerSecond = DrivetrainConstants.SwerveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond /ChasisConstants.slow;
+      public static final double kMaxAngularSpeedRadiansPerSecond = DrivetrainConstants.SwerveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond /ChasisConstants.slow;
       public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / ChasisConstants.slow;
       public static final double kPXController = 2;
       public static final double kPThetaController = 6;

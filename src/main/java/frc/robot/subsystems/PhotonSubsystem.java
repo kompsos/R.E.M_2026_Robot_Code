@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class PhotonSubsystem extends SubsystemBase {
   public boolean foundATarget = false;
