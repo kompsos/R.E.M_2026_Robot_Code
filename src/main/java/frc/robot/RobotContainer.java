@@ -4,15 +4,21 @@
 
 package frc.robot;
 
+import frc.robot.commands.intake.IntakeBalls;
+import frc.robot.commands.intake.IntakePivot;
 import frc.robot.commands.swerve.HomeTrajectory;
 import frc.robot.commands.swerve.Reset;
 import frc.robot.commands.swerve.SwerveJoystick;
-import frc.robot.commands.turret.TurretRPM;
+import frc.robot.commands.turret.Shoot;
+import frc.robot.commands.turret.TurretPIDRotate;
 import frc.robot.commands.turret.TurretRotate;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.Constants.OIConstants;
 import frc.robot.subsystems.PhotonSubsystem;
+import frc.robot.subsystems.SpindexerSubsystem;
+import frc.robot.subsystems.intake.IntakePivotSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.turret.TurretLaunchSubsystem;
 import frc.robot.subsystems.turret.TurretRotateSubsystem;
@@ -42,6 +48,9 @@ public class RobotContainer {
   public final static PhotonSubsystem photonSubsystem = new PhotonSubsystem(swerveSubsystem);
   public final static TurretRotateSubsystem turretRotateSubsystem = new TurretRotateSubsystem();
   public final static TurretLaunchSubsystem turretLaunchSubsystem = new TurretLaunchSubsystem();
+  public final static SpindexerSubsystem spindexerSubsystem = new SpindexerSubsystem();
+  public final static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public final static IntakePivotSubsystem intakePivotSubsystem = new IntakePivotSubsystem();
 
   public RobotContainer() {
     configureBindings();
@@ -51,18 +60,36 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Operator Controls
+    //Manual Turret Control
     new Trigger(() -> m_operatorController.getRightX() > 0.0)
-        .whileTrue(new TurretRotate(turretRotateSubsystem, -0.5));
+        .whileTrue(new TurretRotate(turretRotateSubsystem));
             new Trigger(() -> m_operatorController.getRightX() < 0.0)
-        .whileTrue(new TurretRotate(turretRotateSubsystem, 0.5));
+        .whileTrue(new TurretRotate(turretRotateSubsystem));
 
-    m_operatorController.rightTrigger().whileTrue(new TurretRPM(-0.7, turretLaunchSubsystem));
-    m_operatorController.leftTrigger().whileTrue(new TurretRPM(0.7, turretLaunchSubsystem));
+    //Shoot Turret
+    m_operatorController.rightTrigger().whileTrue(new Shoot(-.85, turretLaunchSubsystem, spindexerSubsystem));
+    m_operatorController.leftTrigger().whileTrue(new Shoot(.85, turretLaunchSubsystem, spindexerSubsystem));
+
+    //PID Turret Control
+    m_operatorController.leftBumper().whileTrue(new TurretPIDRotate(turretRotateSubsystem, 45));
+    m_operatorController.rightBumper().whileTrue(new TurretPIDRotate(turretRotateSubsystem, -45));
+    m_operatorController.a().whileTrue(new TurretPIDRotate(turretRotateSubsystem, 0));
 
     // Driver Controls
+    //Reset Odometry
     m_driverController.a().onTrue(new Reset(swerveSubsystem, photonSubsystem).withTimeout(0.1));
+    
+    //Go to 0,0
     m_driverController.b().whileTrue(new HomeTrajectory(swerveSubsystem));
+    
+    //Intake
+    m_driverController.rightTrigger().whileTrue(new IntakeBalls(1, intakeSubsystem));
 
+    //Intake Pivot
+    m_driverController.leftBumper().whileTrue(new IntakePivot(0.25, intakePivotSubsystem));
+    m_driverController.rightBumper().whileTrue(new IntakePivot(-0.25, intakePivotSubsystem));
+
+    //Driving
     swerveSubsystem.setDefaultCommand(new SwerveJoystick(
         swerveSubsystem,
         () -> driverJoystick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back

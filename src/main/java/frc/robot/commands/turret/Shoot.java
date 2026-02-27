@@ -4,39 +4,41 @@
 
 package frc.robot.commands.turret;
 
-import java.util.function.Supplier;
-
-import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.turret.TurretRotateSubsystem;
+import frc.robot.subsystems.SpindexerSubsystem;
+import frc.robot.subsystems.turret.TurretLaunchSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TurretRotate extends Command {
-  /** Creates a new TurretRotate. */
-  TurretRotateSubsystem turret;
-  public TurretRotate(TurretRotateSubsystem turret) {
+public class Shoot extends Command {
+  /** Creates a new TurretRPM. */
+  TurretLaunchSubsystem turret;
+  SpindexerSubsystem spindexerSubsystem;
+  double speed;
+  public Shoot(double speed, TurretLaunchSubsystem turret, SpindexerSubsystem spindexerSubsystem) {
+    this.speed = speed;
     this.turret = turret;
-    addRequirements(turret);
+    this.spindexerSubsystem = spindexerSubsystem;
+    addRequirements(turret, spindexerSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //turret.rotate(speed);
+    turret.revUP(speed);
+    spindexerSubsystem.spinUp(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.rotate(-(RobotContainer.m_operatorController.getRightX() / 1.5));
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    turret.stopRotate();;
+    turret.revDown();
+    spindexerSubsystem.spinDown();
   }
 
   // Returns true when the command should end.

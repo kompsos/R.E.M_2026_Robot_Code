@@ -7,7 +7,10 @@ package frc.robot.subsystems.turret;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkSoftLimit.SoftLimitDirection;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,13 +27,31 @@ public class TurretRotateSubsystem extends SubsystemBase {
 
     SparkMaxConfig basicSparkMaxConfig = new SparkMaxConfig();
 
-    basicSparkMaxConfig.smartCurrentLimit(TurretConstants.MotorConstants.rotateSparkID);
-    basicSparkMaxConfig.encoder.positionConversionFactor(0.25 * 0.19);
+    basicSparkMaxConfig.smartCurrentLimit(40);
+    basicSparkMaxConfig.encoder.positionConversionFactor(0.04 * 0.158);
+
+    SoftLimitConfig softLimitConfig = new SoftLimitConfig();
+    softLimitConfig.forwardSoftLimit(0.402);
+    softLimitConfig.reverseSoftLimit(-0.402);
+    
+    softLimitConfig.forwardSoftLimitEnabled(true);
+    softLimitConfig.reverseSoftLimitEnabled(true);
+    basicSparkMaxConfig.closedLoop.p(1);
+    basicSparkMaxConfig.closedLoop.i(0);
+    basicSparkMaxConfig.closedLoop.d(0);
+    basicSparkMaxConfig.closedLoop.outputRange(-0.402, 0.402);
+
+    basicSparkMaxConfig.apply(softLimitConfig);
     rotateSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rotateSpark.getEncoder().setPosition(0);
+  }
+
+  public void setAngle(double degrees) {
+    rotateSpark.getClosedLoopController().setSetpoint(degrees / 360, ControlType.kPosition);
   }
 
   public void rotate(double speed) {
-      rotateSpark.set(speed);
+    rotateSpark.set(speed);
   }
 
   public void stopRotate() {
