@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SpindexerSubsystem extends SubsystemBase {
   /** Creates a new SpindexerSubsystem. */
-  private SparkMax kicker550;
-  private SparkMax indexer;
+  public SparkMax kicker550;
+  public SparkMax indexer;
   public SpindexerSubsystem() {
     kicker550 = new SparkMax(5, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     indexer = new SparkMax(2, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -28,7 +28,7 @@ public class SpindexerSubsystem extends SubsystemBase {
 
   public void spinUp(double speed) {
     kicker550.set(-speed);
-    indexer.set(-speed / 3.5);
+    indexer.set(-speed / 4);
   }
 
   public void spinDown() {
@@ -38,13 +38,10 @@ public class SpindexerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("TubeRPM", kicker550.getEncoder().getVelocity());
-    SmartDashboard.putNumber("IndexerRPM", indexer.getEncoder().getVelocity());
+    SmartDashboard.putNumber("TubeRPM", Math.abs(kicker550.getEncoder().getVelocity()/5));
+    SmartDashboard.putNumber("IndexerRPM", Math.abs(indexer.getEncoder().getVelocity()/9));
 
     SmartDashboard.putNumber("TubeAmperage", kicker550.getOutputCurrent());
     SmartDashboard.putNumber("IndexerAmperage", indexer.getOutputCurrent());
-
-    SmartDashboard.putNumber("TubeTemperature", kicker550.getMotorTemperature());
-    SmartDashboard.putNumber("IndexerTemperature", indexer.getMotorTemperature());
   }
 }

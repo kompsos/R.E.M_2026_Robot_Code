@@ -8,39 +8,67 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class TurretLaunchSubsystem extends SubsystemBase {
   /** Creates a new TurretLaunchSubsystem. */
-  SparkMax leftSpark;
-  SparkMax rightSpark;
+  public SparkMax leftSpark;
+  public SparkMax rightSpark;
 
   public TurretLaunchSubsystem() {
-    leftSpark = new SparkMax(8, MotorType.kBrushless);
-    rightSpark = new SparkMax(14, MotorType.kBrushless);
+    leftSpark = new SparkMax(Constants.TurretConstants.leftFlywheelSparkID, MotorType.kBrushless);
+    rightSpark = new SparkMax(Constants.TurretConstants.rightFlywheelSparkID, MotorType.kBrushless);
     SparkMaxConfig basicSparkMaxConfig = new SparkMaxConfig();
+    SparkMaxConfig followerSparkMaxConfig = new SparkMaxConfig();
+    basicSparkMaxConfig.smartCurrentLimit(Constants.TurretConstants.launchStall);
 
-    basicSparkMaxConfig.smartCurrentLimit(30);
+    basicSparkMaxConfig.closedLoop.p(Constants.TurretConstants.launchP);
+    basicSparkMaxConfig.closedLoop.i(Constants.TurretConstants.launchI);
+    basicSparkMaxConfig.closedLoop.d(Constants.TurretConstants.launchD);
+    basicSparkMaxConfig.closedLoop.velocityFF(Constants.TurretConstants.launchFF);
+    basicSparkMaxConfig.closedLoop.outputRange(0, 1);
+    basicSparkMaxConfig.inverted(true);
+    followerSparkMaxConfig.smartCurrentLimit(50);
+    followerSparkMaxConfig.follow(leftSpark, true);
+    
     leftSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightSpark.configure(followerSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightSpark.resumeFollowerMode();
   }
 
   public void revUP(double speed) {
-    leftSpark.set(speed);
-    rightSpark.set(-speed);
+    leftSpark.getClosedLoopController().setSetpoint(speed, ControlType.kVelocity);
+  }
+
+  public void controlledRevUP(double distance) {
+    leftSpark
+    .getClosedLoopController()
+    .setSetpoint(
+      calculateDistancetoRPM(distance, Constants.TurretConstants.launchEstimationEfficencyFactor
+      ), ControlType.kVelocity);
   }
 
   public void revDown() {
     leftSpark.stopMotor();
-    rightSpark.stopMotor();
+  }
+
+  public double calculateDistancetoRPM(double distance, double EF) {
+    double rpm = 60 * (
+      Math.sqrt(
+        (9.81 * (distance/EF))/0.9944) / 0.1595
+      ) + 30;
+
+      return rpm;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("TurretRPM", (leftSpark.getEncoder().getVelocity() + rightSpark.getEncoder().getVelocity()) / 2);
+    SmartDashboard.putNumber("TurretRPM", (Math.abs(leftSpark.getEncoder().getVelocity())));
   }
 }

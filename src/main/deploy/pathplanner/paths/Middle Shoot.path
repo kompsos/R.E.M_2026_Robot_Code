@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 8.0
+        "x": 3.55,
+        "y": 4.014572072072072
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.078169794861183,
-        "y": 8.237655784579546
+        "x": 2.900414314098414,
+        "y": 4.014572072072072
       },
       "isLocked": false,
-      "linkedName": "Left Point"
+      "linkedName": "Middle"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 6.0
+        "x": 2.1900000000000004,
+        "y": 4.0346376
       },
       "prevControl": {
-        "x": 1.9239716167643706,
-        "y": 6.357083808766619
+        "x": 2.4400000000000004,
+        "y": 4.0346376
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right"
+      "linkedName": "Middle Backup"
     }
   ],
   "rotationTargets": [],
@@ -33,10 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 8.8,
+    "maxAngularVelocity": 330.0,
+    "maxAngularAcceleration": 2400.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -45,10 +45,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "PID Testing Auto",
+  "folder": "Middle Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

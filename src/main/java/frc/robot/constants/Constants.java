@@ -7,47 +7,67 @@ package frc.robot.constants;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class MathConstants {
-    public static final double rotationToDegree = 360;
-  }
-
   public static class DataLoggingConstants {
-    public static Field2d odometryRelativeField = new Field2d();
-    public static Field2d visionRelativeField = new Field2d();
+    public static Field2d estimatedField = new Field2d();
   }
 
-  public static class PhotonConstants {
-    public static String frontCameras1 = "frontone";
+  public static class VisionConstants {
+    public static String backCamera = "limelight-royal";
     public static double maxAllowedAmbiguity = 0.15;
-    public static AprilTagFields fieldLayout = AprilTagFields.k2026RebuiltAndymark;
+    public static AprilTagFields fieldLayout = AprilTagFields.k2026RebuiltWelded;
   }
 
-  public static final class OIConstants
-  {
+  public static final class OIConstants {
     public static final int kDriverYAxis = 1;
     public static final int kDriverXAxis = 0;
     public static final int kDriverRotAxis = 4;
     public static final int kDriverFieldOrientedButtonIdx = 5;
-
-
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDeadband = 0.06;
-    
+  }
+
+  public static class EndgameConstants {
+    public static int leftElevatorMotorSparkID = 0;
+    public static int rightElevatorMotorSparkID = 0;
+    public static int elevatorHookMotorSparkID = 0;
+
+    public static int elevatorHooksStall = 10;
+    public static int elevatorStallPeak = 40; //Divided between both pulling motors
+  }
+
+  public static class IntakeConstants {
+     public static final int intakePivotSparkID = 40;
+     public static final int intakeRollerSparkID = 30;
+     public static final int rollerStall = 20;
+     public static final int pivotStall = 40;
+  }
+
+  public static class TurretConstants {
+    public static final int limitSwitchID = 0;
+    public static final int turnStall = 15;
+    public static final int shootStall = 50;
+    public static final int launchStall = 25;
+    public static final int rotateSparkID = 62;
+    public static final int leftFlywheelSparkID = 8;
+    public static final int rightFlywheelSparkID = 14;
+    public static final double turnConversionFactor = (0.04 * 0.14285714285);
+    public static final double maxRotationAmount = 0.5;
+    public static final boolean softLimitsEnabled = true;
+
+    public static final double rotateP = 45;
+    public static final double rotateI = 0;
+    public static final double rotateD = 0;
+
+    public static final double launchP = 0.000005;
+    public static final double launchI = 0;
+    public static final double launchD = 0;
+    public static final double launchFF = 0.0021703;
+    public static final double launchEstimationEfficencyFactor = 0.8;
   }
 }
-
-

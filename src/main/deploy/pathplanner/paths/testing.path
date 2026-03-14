@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 0.0,
+        "y": 0.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1682972601677006,
-        "y": 6.8151323927237515
+        "x": 0.7391159974281635,
+        "y": 0.017035589592734143
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 3.1019467213114758
+        "x": 0.58,
+        "y": 0.0
       },
       "prevControl": {
-        "x": 1.8473529094343106,
-        "y": 8.345753680606197
+        "x": -0.334186667723282,
+        "y": -0.05525833171351573
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,19 +33,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 8.8,
+    "maxAngularVelocity": 330.0,
+    "maxAngularAcceleration": 2400.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.33943050853814
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "PID Testing Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

@@ -16,17 +16,24 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
@@ -54,18 +61,31 @@ public class SwerveSubsystem extends SubsystemBase {
 
   SendableChooser<Double> speed_chooser = new SendableChooser<>();
   SendableChooser<Boolean> field_oriented_Chooser = new SendableChooser<>();
-  
+
   RobotConfig config;
 
   public ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);;
   public SwerveDriveOdometry swerveDriveOdometry;
   public Pigeon2 gyro;
 
+  public SwerveDrivePoseEstimator estimatedPosition;
+
+  public Pose2d getEstimatedPose() {
+    return estimatedPosition.getEstimatedPosition();
+  }
+
   public SwerveSubsystem(int gyroPort) {
     this.gyro = new Pigeon2(gyroPort);
 
     swerveDriveOdometry = new SwerveDriveOdometry(DrivetrainConstants.SwerveConstants.driveKinematics, getRotation2d(),
         getModulePositions());
+
+    estimatedPosition = new SwerveDrivePoseEstimator(new SwerveDriveKinematics(
+        new Translation2d(0.279, 0.279),
+        new Translation2d(0.279, -0.279),
+        new Translation2d(-0.279, 0.279),
+        new Translation2d(-0.279, -0.279)), getRotation2d(), getModulePositions(), getPose(),
+        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)), VecBuilder.fill(.5, .5, 9999999));
 
     speed_chooser.addOption("Fast", DrivetrainConstants.ChasisConstants.fast);
     speed_chooser.addOption("Slow", DrivetrainConstants.ChasisConstants.slow);
@@ -81,7 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
     try {
       config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
-          this::getPose,
+          this::getEstimatedPose,
           this::resetPose,
           this::getRobotRelativeSpeeds,
           (speeds, feedforwards) -> driveRobotRelative(speeds),
@@ -140,8 +160,8 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
-    System.out.println(pose);
     swerveDriveOdometry.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
+    estimatedPosition.resetPose(pose);
   }
 
   public void stopModules() {
@@ -187,11 +207,20 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     swerveDriveOdometry.update(getRotation2d(), getModulePositions());
-    Constants.DataLoggingConstants.odometryRelativeField
-        .setRobotPose(RobotContainer.swerveSubsystem.swerveDriveOdometry.getPoseMeters());
-    SmartDashboard.putData("Odometry Field", Constants.DataLoggingConstants.odometryRelativeField);
-    SmartDashboard.putData("Vision Field", Constants.DataLoggingConstants.visionRelativeField);
-    Pose2d pose = swerveDriveOdometry.getPoseMeters();
+    estimatedPosition.update(getRotation2d(), getModulePositions());
+    LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.backCamera, gyro.getYaw().getValueAsDouble(), 0, 0,
+        0, 0, 0);
+    LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, -0.322, -0.274, 0.247, 0, 15, 180);
+
+    LimelightHelpers.PoseEstimate megatag2Estimate = LimelightHelpers
+        .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);
+
+    if (LimelightHelpers.getTargetCount(Constants.VisionConstants.backCamera) > 0) {
+      estimatedPosition.addVisionMeasurement(megatag2Estimate.pose, megatag2Estimate.timestampSeconds);
+    }
+    Constants.DataLoggingConstants.estimatedField.setRobotPose(estimatedPosition.getEstimatedPosition());
+    SmartDashboard.putData("Estimated Field", Constants.DataLoggingConstants.estimatedField);
+    Pose2d pose = estimatedPosition.getEstimatedPosition();
     double distanceTraveled = Math.sqrt(Math.pow(pose.getX() - 0, 2) + Math.pow(pose.getY() - 0, 2));
 
     SmartDashboard.putNumber("Rotation", getHeading());

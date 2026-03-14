@@ -32,7 +32,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 public class PhotonSubsystem extends SubsystemBase {
   public boolean foundATarget = false;
   public Pose3d visionEstimatedRobotPose = null;
-  private final PhotonCamera frontPhotonCameras = new PhotonCamera(Constants.PhotonConstants.frontCameras1);
+  private final PhotonCamera frontPhotonCameras = new PhotonCamera(Constants.VisionConstants.frontCameras1);
   public final SwerveDrivePoseEstimator m_poseEstimator;
   public final PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(AprilTagFields.k2025ReefscapeAndyMark.loadAprilTagLayoutField(), PoseStrategy.CLOSEST_TO_REFERENCE_POSE, new Transform3d(0,0,0, new Rotation3d()));
   private final SwerveSubsystem swerve;
@@ -56,7 +56,7 @@ public class PhotonSubsystem extends SubsystemBase {
     foundATarget = frontPhotonCameras.getLatestResult().targets.size() > 0;
     frontPhotonCameras.getAllUnreadResults().forEach((result) -> {
       result.targets.forEach((target) -> {
-        if (target.poseAmbiguity <= Constants.PhotonConstants.maxAllowedAmbiguity) {
+        if (target.poseAmbiguity <= Constants.VisionConstants.maxAllowedAmbiguity) {
           visionEstimatedRobotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
               AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark).getTagPose(target.getFiducialId())
                   .get(),

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.Constants;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -78,6 +79,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode! */
   @Override
   public void disabledInit() {
+    LimelightHelpers.SetThrottle("limelight-royal", 200);
   }
 
   @Override
@@ -92,6 +94,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    LimelightHelpers.SetThrottle(Constants.VisionConstants.backCamera, 0);
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -109,7 +112,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-
+    LimelightHelpers.SetThrottle(Constants.VisionConstants.backCamera, 0);
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -122,6 +125,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    LimelightHelpers.SetThrottle(Constants.VisionConstants.backCamera, 0);
   }
 
   /** This function is called periodically during test mode. */

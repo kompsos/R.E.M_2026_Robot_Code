@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 6.0
+        "x": 0.44510932747258747,
+        "y": 6.923959487524403
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 0.5398567487567327,
+        "y": 6.535706091042831
       },
       "isLocked": false,
-      "linkedName": "Right"
+      "linkedName": "Depot Intake"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 0.44510932747258747,
+        "y": 4.991510416013268
       },
       "prevControl": {
-        "x": 1.0,
-        "y": 7.0
+        "x": 0.37749349614652405,
+        "y": 5.232192985706392
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Home"
+      "linkedName": "Past Depot"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "PID Testing Auto",
+  "folder": "Middle Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 2.2,
+        "y": 4.0346376
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 2.6765251127481857,
+        "y": 4.146329862375206
       },
       "isLocked": false,
-      "linkedName": "Home"
+      "linkedName": "Middle Backup"
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 0.45,
+        "y": 0.8034864767247267
       },
       "prevControl": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 0.322701943672527,
+        "y": 1.0186496818859427
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Back"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 8.8,
+    "maxAngularVelocity": 330.0,
+    "maxAngularAcceleration": 2400.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "PID Testing Auto",
+  "folder": "Middle Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

@@ -12,15 +12,16 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new TurretLaunchSubsystem. */
-  SparkMax IntakeRollerSpark;
+  public SparkMax IntakeRollerSpark;
 
   public IntakeSubsystem() {
-    IntakeRollerSpark = new SparkMax(26, MotorType.kBrushless);
+    IntakeRollerSpark = new SparkMax(Constants.IntakeConstants.intakeRollerSparkID, MotorType.kBrushless);
     SparkMaxConfig basicSparkMaxConfig = new SparkMaxConfig();
-    basicSparkMaxConfig.smartCurrentLimit(30);
+    basicSparkMaxConfig.smartCurrentLimit(Constants.IntakeConstants.rollerStall);
     IntakeRollerSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
@@ -35,6 +36,6 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("IntakeRPM", (IntakeRollerSpark.getEncoder().getVelocity()));
+    SmartDashboard.putNumber("IntakeRPM", (Math.abs(IntakeRollerSpark.getEncoder().getVelocity())));
   }
 }

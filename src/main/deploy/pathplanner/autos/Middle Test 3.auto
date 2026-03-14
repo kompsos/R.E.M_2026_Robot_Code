@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left"
+            "pathName": "Middle Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right"
+            "pathName": "To Depot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Home"
+            "pathName": "Intake Depot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Forward Back"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Back"
+            "pathName": "Climb"
           }
         }
       ]

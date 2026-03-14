@@ -23,14 +23,12 @@ public class TurretRotate extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //turret.rotate(speed);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.rotate(-(RobotContainer.m_operatorController.getRightX() / 1.5));
+    turret.linearRotate(-(RobotContainer.m_operatorController.getRightX() / 1.5));
   }
 
   // Called once the command ends or is interrupted.
