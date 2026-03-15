@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 public class TurretRotateSubsystem extends SubsystemBase {
-  SparkMax rotateSpark;
+  public SparkMax rotateSpark;
   DigitalInput limitSwitch = new DigitalInput(Constants.TurretConstants.limitSwitchID);
 
   /** Creates a new TurretSubsystem. */
@@ -66,6 +66,11 @@ public class TurretRotateSubsystem extends SubsystemBase {
 
     double turretGoal = goalAngle - robotPose2d.getRotation().getDegrees();
 
+    if(turretGoal < -180) 
+      turretGoal += 360;
+
+      if(turretGoal > 180) 
+      turretGoal -= 360;
     return turretGoal;
   }
 

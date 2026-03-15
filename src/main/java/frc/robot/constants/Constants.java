@@ -50,17 +50,17 @@ public final class Constants {
 
   public static class TurretConstants {
     public static final int limitSwitchID = 0;
-    public static final int turnStall = 15;
+    public static final int turnStall = 5;
     public static final int shootStall = 50;
     public static final int launchStall = 25;
     public static final int rotateSparkID = 62;
     public static final int leftFlywheelSparkID = 8;
     public static final int rightFlywheelSparkID = 14;
     public static final double turnConversionFactor = (0.04 * 0.1323);
-    public static final double maxRotationAmount = 0.5;
-    public static final boolean softLimitsEnabled = false;
+    public static final double maxRotationAmount = 1;
+    public static final boolean softLimitsEnabled = true;
 
-    public static final double rotateP = 45;
+    public static final double rotateP = 90;
     public static final double rotateI = 0;
     public static final double rotateD = 0;
 

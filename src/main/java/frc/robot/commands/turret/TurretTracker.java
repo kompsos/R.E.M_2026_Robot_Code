@@ -4,40 +4,39 @@
 
 package frc.robot.commands.turret;
 
-import static edu.wpi.first.units.Units.Degree;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.turret.TurretRotateSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TurretPIDRotate extends Command {
-  private double angle;
-  private TurretRotateSubsystem turret;
-  /** Creates a new TurretPIDRotate. */
-  public TurretPIDRotate(TurretRotateSubsystem turret, double degrees) {
+public class TurretTracker extends Command {
+  /** Creates a new TurretTracker. */
+  TurretRotateSubsystem turret;
+  SwerveSubsystem swerve;
+  public TurretTracker(TurretRotateSubsystem turretRotateSubsystem, SwerveSubsystem swerveSubsystem) {
+    this.turret = turretRotateSubsystem;
+    this.swerve = swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.turret = turret;
-    this.angle = degrees;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    turret.setAngle(angle);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("TurretTurnRequirement", angle);
+    turret.setAngle(
+      turret.getTurretGoal(swerve.getEstimatedPose(), new Pose2d(4.620, 4.015, new Rotation2d(0)))
+    );
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    turret.rotateSpark.stopMotor();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

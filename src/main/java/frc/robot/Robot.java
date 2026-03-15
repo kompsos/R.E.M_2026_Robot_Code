@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-          SmartDashboard.putNumber("TurretTurnRequirement", 
+          SmartDashboard.putNumber("TurretTurnRequirement hopefully", 
         RobotContainer.turretRotateSubsystem.getTurretGoal(
           RobotContainer.swerveSubsystem.getEstimatedPose(), new Pose2d(4.620,4.015, new Rotation2d(0)))
       );

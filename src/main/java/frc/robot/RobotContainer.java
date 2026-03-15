@@ -14,6 +14,7 @@ import frc.robot.commands.swerve.SwerveJoystick;
 import frc.robot.commands.turret.Shoot;
 import frc.robot.commands.turret.TurretPIDRotate;
 import frc.robot.commands.turret.TurretRotate;
+import frc.robot.commands.turret.TurretTracker;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.Constants.OIConstants;
@@ -95,10 +96,7 @@ public class RobotContainer {
 
     // PID Turret Control
     
-    /*m_operatorController.leftBumper().whileTrue(
-        new TurretPIDRotate(turretRotateSubsystem,
-            turretRotateSubsystem.getTurretGoal(RobotContainer.swerveSubsystem.getEstimatedPose(),
-                goalPose2d)));*/
+    m_driverController.povLeft().whileTrue(new TurretTracker(turretRotateSubsystem, swerveSubsystem));
                 
 
     m_operatorController.leftBumper().whileTrue(new TurretPIDRotate(turretRotateSubsystem, 90));
