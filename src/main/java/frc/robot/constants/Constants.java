@@ -33,8 +33,8 @@ public final class Constants {
   }
 
   public static class EndgameConstants {
-    public static int leftElevatorMotorSparkID = 0;
-    public static int rightElevatorMotorSparkID = 0;
+    public static int leftElevatorMotorSparkID = 16;
+    public static int rightElevatorMotorSparkID = 32;
     public static int elevatorHookMotorSparkID = 0;
 
     public static int elevatorHooksStall = 10;
@@ -56,9 +56,9 @@ public final class Constants {
     public static final int rotateSparkID = 62;
     public static final int leftFlywheelSparkID = 8;
     public static final int rightFlywheelSparkID = 14;
-    public static final double turnConversionFactor = (0.04 * 0.14285714285);
+    public static final double turnConversionFactor = (0.04 * 0.1323);
     public static final double maxRotationAmount = 0.5;
-    public static final boolean softLimitsEnabled = true;
+    public static final boolean softLimitsEnabled = false;
 
     public static final double rotateP = 45;
     public static final double rotateI = 0;

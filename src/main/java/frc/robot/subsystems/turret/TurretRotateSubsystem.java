@@ -60,7 +60,7 @@ public class TurretRotateSubsystem extends SubsystemBase {
 
     /*Goal angle is what the robot would need to turn too,
      do not use this, use turretGoal*/
-    double goalAngle = Math.atan(y / x);
+    double goalAngle = Math.atan(y / x) * (360/ (2*Math.PI) );
     if (robotPose2d.getX() > goalPoint.getX())
       goalAngle += 180;
 
@@ -83,14 +83,11 @@ public class TurretRotateSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(limitSwitch.get()) {
-      if(getTurretAngle() < 0)
-        rotateSpark.getEncoder().setPosition(-Constants.TurretConstants.maxRotationAmount);
-      if(getTurretAngle() > 0)
-        rotateSpark.getEncoder().setPosition(Constants.TurretConstants.maxRotationAmount);
+    if(!limitSwitch.get()) {
+        rotateSpark.getEncoder().setPosition(0);
     }
 
     SmartDashboard.putNumber("Turret Angle", (getTurretAngle()));
-    SmartDashboard.putBoolean("TurretLimitL", limitSwitch.get());
+    SmartDashboard.putBoolean("TurretLimit", limitSwitch.get());
   }
 }

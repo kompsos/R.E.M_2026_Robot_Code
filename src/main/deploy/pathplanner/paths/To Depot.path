@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1797860360360364,
-        "y": 6.721272522522522
+        "x": 1.3338964620879907,
+        "y": 6.042977849927237
       },
       "isLocked": false,
       "linkedName": "Middle Backup"
     },
     {
       "anchor": {
-        "x": 0.44510932747258747,
-        "y": 6.923959487524403
+        "x": 1.567,
+        "y": 5.969
       },
       "prevControl": {
-        "x": 0.46587069743602255,
-        "y": 7.1730959270856225
+        "x": 1.6289506476433524,
+        "y": 6.211202636766344
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Middle Auto",

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.44510932747258747,
-        "y": 6.923959487524403
+        "x": 1.567,
+        "y": 5.969
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.5398567487567327,
-        "y": 6.535706091042831
+        "x": 1.7872081658493217,
+        "y": 5.850643066560182
       },
       "isLocked": false,
       "linkedName": "Depot Intake"
     },
     {
       "anchor": {
-        "x": 0.44510932747258747,
-        "y": 4.991510416013268
+        "x": 1.1451066350710897,
+        "y": 5.969
       },
       "prevControl": {
-        "x": 0.37749349614652405,
-        "y": 5.232192985706392
+        "x": 1.35799032460405,
+        "y": 6.1000745388351
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Middle Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }

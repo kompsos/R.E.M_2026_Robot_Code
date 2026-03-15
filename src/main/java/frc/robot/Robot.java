@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -30,6 +32,8 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
+
+
       SmartDashboard.putData("Swerve Drive", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
@@ -64,6 +68,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+          SmartDashboard.putNumber("TurretTurnRequirement", 
+        RobotContainer.turretRotateSubsystem.getTurretGoal(
+          RobotContainer.swerveSubsystem.getEstimatedPose(), new Pose2d(4.620,4.015, new Rotation2d(0)))
+      );
+
+      SmartDashboard.putNumber("TurretRPMRequirement", 
+        RobotContainer.turretLaunchSubsystem.calculateDistancetoRPM(
+          MathTools.calculateDistance2Points(RobotContainer.swerveSubsystem.getEstimatedPose(), new Pose2d(4.620, 4.015, new Rotation2d(0))
+        ), 0.8)
+      );
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
