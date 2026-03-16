@@ -16,8 +16,17 @@ import frc.robot.constants.Constants;
 public class IntakePivotSubsystem extends SubsystemBase {
   /** Creates a new IntakePivotSubsystem. */
   public SparkMax pivotSpark;
+  public pivotScenarios mode = pivotScenarios.neutral;
 
-  public IntakePivotSubsystem() {    
+  public static enum pivotScenarios {
+    idleDown,
+    idleUp,
+    activeUp,
+    activeDown,
+    neutral
+  }
+
+  public IntakePivotSubsystem() {
     pivotSpark = new SparkMax(Constants.IntakeConstants.intakePivotSparkID, MotorType.kBrushless);
 
     SparkMaxConfig basicSparkMaxConfig = new SparkMaxConfig();
@@ -26,11 +35,26 @@ public class IntakePivotSubsystem extends SubsystemBase {
     pivotSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void rotate(double speed) {
-    pivotSpark.set(speed);
-  }
-
-  public void stopRotate() {
-    pivotSpark.stopMotor();
+  public void updateMode(pivotScenarios mode) {
+    switch (mode) {
+      case neutral:
+        pivotSpark.stopMotor();
+        break;
+      case idleUp:
+        pivotSpark.set(1 / 6);
+        break;
+      case idleDown:
+        pivotSpark.set(-(1 / 6));
+        break;
+      case activeUp:
+        pivotSpark.set(1 / 4);
+        break;
+      case activeDown:
+        pivotSpark.set(-(1 / 4));
+        break;
+      default:
+        pivotSpark.stopMotor();
+        break;
+    }
   }
 }

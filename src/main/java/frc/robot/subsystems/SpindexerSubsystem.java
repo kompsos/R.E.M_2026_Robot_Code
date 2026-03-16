@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
@@ -28,7 +27,7 @@ public class SpindexerSubsystem extends SubsystemBase {
 
   public void spinUp(double speed) {
     kicker550.set(-speed);
-    indexer.set(-speed / 4);
+    indexer.set(-speed);
   }
 
   public void spinDown() {

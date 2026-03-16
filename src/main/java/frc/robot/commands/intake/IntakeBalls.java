@@ -34,7 +34,6 @@ public class IntakeBalls extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.revDown();
-
   }
 
   // Returns true when the command should end.

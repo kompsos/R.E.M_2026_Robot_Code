@@ -51,8 +51,7 @@ public final class Constants {
   public static class TurretConstants {
     public static final int limitSwitchID = 0;
     public static final int turnStall = 5;
-    public static final int shootStall = 50;
-    public static final int launchStall = 25;
+    public static final int launchStall = 60;
     public static final int rotateSparkID = 62;
     public static final int leftFlywheelSparkID = 8;
     public static final int rightFlywheelSparkID = 14;

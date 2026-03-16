@@ -33,7 +33,7 @@ public class TurretLaunchSubsystem extends SubsystemBase {
     basicSparkMaxConfig.closedLoop.velocityFF(Constants.TurretConstants.launchFF);
     basicSparkMaxConfig.closedLoop.outputRange(0, 1);
     basicSparkMaxConfig.inverted(true);
-    followerSparkMaxConfig.smartCurrentLimit(50);
+    followerSparkMaxConfig.smartCurrentLimit(Constants.TurretConstants.launchStall);
     followerSparkMaxConfig.follow(leftSpark, true);
     
     leftSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

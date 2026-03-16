@@ -9,23 +9,29 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.MathTools;
+import frc.robot.subsystems.SpindexerSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.subsystems.turret.TurretRotateSubsystem;
+import frc.robot.subsystems.turret.TurretLaunchSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TurretTracker extends Command {
-  /** Creates a new TurretTracker. */
-  TurretRotateSubsystem turret;
+public class EstimatedShoot extends Command {
+  TurretLaunchSubsystem turret;
   SwerveSubsystem swerve;
-  public TurretTracker(TurretRotateSubsystem turretRotateSubsystem, SwerveSubsystem swerveSubsystem) {
-    this.turret = turretRotateSubsystem;
-    this.swerve = swerveSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+  double requiredSpeed;
+  SpindexerSubsystem spindexerSubsystem;
+  public EstimatedShoot(TurretLaunchSubsystem turret, SpindexerSubsystem spindexerSubsystem, SwerveSubsystem swerve) {
+    this.turret = turret;
+    this.swerve = swerve;
+    this.spindexerSubsystem = spindexerSubsystem;
+    addRequirements(turret, spindexerSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -37,14 +43,22 @@ public class TurretTracker extends Command {
       goalPose2d = new Pose2d(11.920, 4.015, new Rotation2d(0));   
     }
     
-    turret.setAngle(
-      turret.getTurretGoal(swerve.getEstimatedPose(), goalPose2d)
-    );
+    double goalRPM = turret.calculateDistancetoRPM(MathTools.calculateDistance2Points(swerve.getEstimatedPose(), goalPose2d), 0.465);
+    turret.revUP(goalRPM);
+      
+    if(turret.leftSpark.getEncoder().getVelocity() >= goalRPM - 150) {
+      spindexerSubsystem.spinUp(1);
+    } else {
+      spindexerSubsystem.spinDown();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    spindexerSubsystem.spinDown();
+    turret.revDown();
+  }
 
   // Returns true when the command should end.
   @Override

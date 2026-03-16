@@ -27,14 +27,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
 
@@ -91,7 +90,7 @@ public class SwerveSubsystem extends SubsystemBase {
     speed_chooser.addOption("Slow", DrivetrainConstants.ChasisConstants.slow);
     speed_chooser.addOption("Slowest", DrivetrainConstants.ChasisConstants.slowest);
     speed_chooser.addOption("Precision", DrivetrainConstants.ChasisConstants.precision);
-    speed_chooser.setDefaultOption("Normal", DrivetrainConstants.ChasisConstants.normal);
+    speed_chooser.setDefaultOption("Default", DrivetrainConstants.ChasisConstants.fast);
     SmartDashboard.putData("Swerve Speed", speed_chooser);
 
     field_oriented_Chooser.addOption("Robot", false);
@@ -129,6 +128,7 @@ public class SwerveSubsystem extends SubsystemBase {
     PathConstraints constraints = new PathConstraints(
         DrivetrainConstants.SwerveConstants.kPhysicalMaxSpeedMetersPerSecond,
         DrivetrainConstants.SwerveConstants.maxAngularAccelerationUnitsPerSecond, 2 * Math.PI, 4 * Math.PI);
+
     PathPlannerPath path = new PathPlannerPath(
         waypoints,
         constraints,
@@ -208,12 +208,17 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     swerveDriveOdometry.update(getRotation2d(), getModulePositions());
     estimatedPosition.update(getRotation2d(), getModulePositions());
-    LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.backCamera, gyro.getYaw().getValueAsDouble(), 0, 0,
+    LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.backCamera, getRotation2d().getDegrees(), 0, 0,
         0, 0, 0);
-    LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, -0.322, -0.274, 0.247, 0, 15, 180);
-
-    LimelightHelpers.PoseEstimate megatag2Estimate = LimelightHelpers
-        .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);
+    LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, 0.322, 0.274, 0.247, 0, 15, 0);
+    LimelightHelpers.PoseEstimate megatag2Estimate;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      megatag2Estimate = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);
+    } else {
+      megatag2Estimate = LimelightHelpers
+          .getBotPoseEstimate_wpiRed_MegaTag2(Constants.VisionConstants.backCamera);
+    }
 
     if (LimelightHelpers.getTargetCount(Constants.VisionConstants.backCamera) > 0) {
       estimatedPosition.addVisionMeasurement(megatag2Estimate.pose, megatag2Estimate.timestampSeconds);
@@ -224,10 +229,6 @@ public class SwerveSubsystem extends SubsystemBase {
     double distanceTraveled = Math.sqrt(Math.pow(pose.getX() - 0, 2) + Math.pow(pose.getY() - 0, 2));
 
     SmartDashboard.putNumber("Rotation", getHeading());
-    SmartDashboard.putNumber("FL", Math.abs(frontLeft.getTurningPosition()));
-    SmartDashboard.putNumber("FR", Math.abs(frontRight.getTurningPosition()));
-    SmartDashboard.putNumber("BL", Math.abs(backLeft.getTurningPosition()));
-    SmartDashboard.putNumber("BR", Math.abs(backRight.getTurningPosition()));
     SmartDashboard.putNumber("Distance Traveled", distanceTraveled);
 
     DrivetrainConstants.SwerveConstants.fieldOriented = field_oriented_Chooser.getSelected().booleanValue();

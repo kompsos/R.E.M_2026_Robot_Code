@@ -4,8 +4,6 @@
 
 package frc.robot.commands.swerve;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,7 +34,6 @@ public class HomeTrajectory extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("test");
     trajectoryCommand.end(interrupted);
   }
 

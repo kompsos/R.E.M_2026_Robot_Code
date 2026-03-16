@@ -4,9 +4,6 @@
 
 package frc.robot.commands.turret;
 
-import static edu.wpi.first.units.Units.Degree;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.turret.TurretRotateSubsystem;
 
@@ -29,9 +26,7 @@ public class TurretPIDRotate extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    SmartDashboard.putNumber("TurretTurnRequirement", angle);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

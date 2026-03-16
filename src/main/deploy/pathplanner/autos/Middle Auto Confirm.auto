@@ -11,9 +11,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
+            "name": "Intake Down"
           }
         },
         {
@@ -29,9 +29,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Climb"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Targeting"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              }
+            ]
           }
         }
       ]

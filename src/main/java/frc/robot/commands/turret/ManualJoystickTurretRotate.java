@@ -4,19 +4,15 @@
 
 package frc.robot.commands.turret;
 
-import java.util.function.Supplier;
-
-import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.turret.TurretRotateSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TurretRotate extends Command {
+public class ManualJoystickTurretRotate extends Command {
   /** Creates a new TurretRotate. */
   TurretRotateSubsystem turret;
-  public TurretRotate(TurretRotateSubsystem turret) {
+  public ManualJoystickTurretRotate(TurretRotateSubsystem turret) {
     this.turret = turret;
     addRequirements(turret);
   }
@@ -28,7 +24,7 @@ public class TurretRotate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.linearRotate(-(RobotContainer.m_operatorController.getRightX() / 1.5));
+    turret.linearRotate(-(RobotContainer.m_operatorController.getRightX() / 2.5));
   }
 
   // Called once the command ends or is interrupted.

@@ -9,8 +9,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkSoftLimit.SoftLimitDirection;
-import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -69,8 +67,11 @@ public class TurretRotateSubsystem extends SubsystemBase {
     if(turretGoal < -180) 
       turretGoal += 360;
 
-      if(turretGoal > 180) 
+    if(turretGoal > 180) 
       turretGoal -= 360;
+    
+
+        turretGoal += 180;
     return turretGoal;
   }
 

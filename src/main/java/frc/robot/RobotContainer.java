@@ -11,9 +11,9 @@ import frc.robot.commands.intake.IntakePivot;
 import frc.robot.commands.swerve.HomeTrajectory;
 import frc.robot.commands.swerve.Reset;
 import frc.robot.commands.swerve.SwerveJoystick;
+import frc.robot.commands.turret.EstimatedShoot;
 import frc.robot.commands.turret.Shoot;
-import frc.robot.commands.turret.TurretPIDRotate;
-import frc.robot.commands.turret.TurretRotate;
+import frc.robot.commands.turret.ManualJoystickTurretRotate;
 import frc.robot.commands.turret.TurretTracker;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DrivetrainConstants;
@@ -22,23 +22,19 @@ import frc.robot.subsystems.SpindexerSubsystem;
 import frc.robot.subsystems.endgame.EndGameSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakePivotSubsystem.pivotScenarios;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.turret.TurretLaunchSubsystem;
 import frc.robot.subsystems.turret.TurretRotateSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -49,85 +45,88 @@ public class RobotContainer {
       OIConstants.kDriverControllerPort);
   public final static CommandXboxController m_operatorController = new CommandXboxController(
       OIConstants.kOperatorControllerPort);
-  private final SendableChooser<Command> autoChooser;
   public final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem(
       DrivetrainConstants.ChasisConstants.pidgeonGyro);
-  // public final static PhotonSubsystem photonSubsystem = new
-  // PhotonSubsystem(swerveSubsystem);
   public final static TurretRotateSubsystem turretRotateSubsystem = new TurretRotateSubsystem();
   public final static TurretLaunchSubsystem turretLaunchSubsystem = new TurretLaunchSubsystem();
   public final static SpindexerSubsystem spindexerSubsystem = new SpindexerSubsystem();
   public final static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   public final static IntakePivotSubsystem intakePivotSubsystem = new IntakePivotSubsystem();
   public final static EndGameSubsystem endGameSubsystem = new EndGameSubsystem();
+  private final SendableChooser<Command> autoChooser;
+
+  // Manual
+  Command joystickTurret = new ManualJoystickTurretRotate(turretRotateSubsystem);
+  Command manualShot = new Shoot(3500, turretLaunchSubsystem, spindexerSubsystem);
+  Command intake = new IntakeBalls(1, intakeSubsystem);
+  Command outtake = new Throwup(turretLaunchSubsystem, intakeSubsystem, spindexerSubsystem);
+
+  // Automated
+  Command cycleShot = Commands.parallel(
+      new EstimatedShoot(turretLaunchSubsystem, spindexerSubsystem, swerveSubsystem),
+      new TurretTracker(turretRotateSubsystem, swerveSubsystem),
+      new IntakePivot(pivotScenarios.idleUp, intakePivotSubsystem));
+
+  Command intakeUp = new IntakePivot(pivotScenarios.activeUp, intakePivotSubsystem);
+  Command intakeDown = new IntakePivot(pivotScenarios.activeDown, intakePivotSubsystem);
+  Command endgameUp = new endgamePivot(-1, endGameSubsystem);
+  Command endgameDown = new endgamePivot(1, endGameSubsystem);
 
   public RobotContainer() {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    NamedCommands.registerCommand("Intake Down", intakeDown.withTimeout(1.125));
+    NamedCommands.registerCommand("Intake Up", intakeUp.withTimeout(1.125));
+    NamedCommands.registerCommand("Endgame Down", endgameDown.withTimeout(3.5));
+    NamedCommands.registerCommand("Shoot Targeting", cycleShot);
   }
 
   private void configureBindings() {
     // Operator Controls
+
     // Manual Turret Control
-    new Trigger(() -> m_operatorController.getRightX() > 0.0)
-        .whileTrue(new TurretRotate(turretRotateSubsystem));
-    new Trigger(() -> m_operatorController.getRightX() < 0.0)
-        .whileTrue(new TurretRotate(turretRotateSubsystem));
+    new Trigger(() -> Math.abs(m_operatorController.getRightX()) > 0.0).whileTrue(joystickTurret);
 
-    // Shoot Turret
-    //m_operatorController.rightTrigger().whileTrue(new Shoot(2000, turretLaunchSubsystem, spindexerSubsystem));
+    // Manual Shooting Override
+    m_operatorController.rightTrigger().whileTrue(manualShot);
 
-    Pose2d goalPose2d;
-    if(DriverStation.getAlliance().get() == Alliance.Blue) {
-      goalPose2d = new Pose2d(4.620, 4.015, new Rotation2d(0));        
-    } else {
-      goalPose2d = new Pose2d(11.920, 4.015, new Rotation2d(0));   
-    }
-    
-    /*m_operatorController.rightTrigger().whileTrue(new Shoot(turretLaunchSubsystem.calculateDistancetoRPM(
-      MathTools.calculateDistance2Points(swerveSubsystem.getEstimatedPose(), goalPose2d)
-    , 0), turretLaunchSubsystem, spindexerSubsystem));*/
+    // Manual Intake Controls
+    m_operatorController.leftBumper().onTrue(intakeUp);
+    m_operatorController.leftTrigger().onTrue(intakeDown);
 
-    m_driverController.rightTrigger().whileTrue(new Shoot(2500, turretLaunchSubsystem, spindexerSubsystem));
-    
-    m_operatorController.leftTrigger()
-        .whileTrue(new Throwup(turretLaunchSubsystem, intakeSubsystem, spindexerSubsystem));
+    // Automatic Shooting
+    m_operatorController.rightBumper().whileTrue(cycleShot);
 
-    // PID Turret Control
-    
-    m_driverController.povLeft().whileTrue(new TurretTracker(turretRotateSubsystem, swerveSubsystem));
-                
-
-    m_operatorController.leftBumper().whileTrue(new TurretPIDRotate(turretRotateSubsystem, 90));
-    m_operatorController.rightBumper().whileTrue(new TurretPIDRotate(turretRotateSubsystem, -90));
-    m_operatorController.a().whileTrue(new TurretPIDRotate(turretRotateSubsystem, 0));
+    // Reset Odometry
+    m_operatorController.a().onTrue(new Reset(swerveSubsystem).withTimeout(0.1));
 
     // Driver Controls
 
     // Endgame
-    m_driverController.povUp().whileTrue(new endgamePivot(1, endGameSubsystem));
-    m_driverController.povDown().whileTrue(new endgamePivot(-1, endGameSubsystem));
-
-    // Reset Odometry
-    m_driverController.a().onTrue(new Reset(swerveSubsystem).withTimeout(0.1));
+    m_driverController.povUp().whileTrue(endgameUp);
+    m_driverController.povDown().whileTrue(endgameDown);
 
     // Go to 0,0
     m_driverController.b().whileTrue(new HomeTrajectory(swerveSubsystem));
 
     // Intake
-    m_driverController.leftTrigger().whileTrue(new IntakeBalls(1, intakeSubsystem));
+    m_driverController.rightTrigger().whileTrue(intake);
+    m_driverController.leftTrigger().whileTrue(outtake);
 
     // Intake Pivot
-    m_driverController.leftBumper().onTrue(new IntakePivot(0.125, intakePivotSubsystem).withTimeout(1.25));
-    m_driverController.rightBumper().onTrue(new IntakePivot(-0.125, intakePivotSubsystem).withTimeout(1.25));
+    m_driverController.leftBumper()
+        .onTrue(intakeUp.withTimeout(1.25));
+    m_driverController.rightBumper()
+        .onTrue(intakeDown.withTimeout(1.25));
 
     // Driving
     swerveSubsystem.setDefaultCommand(new SwerveJoystick(
         swerveSubsystem,
         () -> -driverJoystick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back
         () -> -driverJoystick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
-        () -> -driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
+        () -> driverJoystick.getRawAxis(OIConstants.kDriverRotAxis),
         () -> DrivetrainConstants.SwerveConstants.fieldOriented));
   }
 
