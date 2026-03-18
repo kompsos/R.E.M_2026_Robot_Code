@@ -17,6 +17,7 @@ public class EndGameSubsystem extends SubsystemBase {
   public SparkMax elevatorRightSpark;
   public SparkMax elevatorHookSpark;
 
+
   /** Creates a new endgame. */
   public EndGameSubsystem() {
     elevatorLeftSpark = new SparkMax(Constants.EndgameConstants.leftElevatorMotorSparkID, MotorType.kBrushless);
@@ -24,7 +25,7 @@ public class EndGameSubsystem extends SubsystemBase {
     elevatorHookSpark = new SparkMax(Constants.EndgameConstants.elevatorHookMotorSparkID, MotorType.kBrushless);
 
     SparkMaxConfig masterElevatorConfig = new SparkMaxConfig();
-    masterElevatorConfig.smartCurrentLimit(Constants.EndgameConstants.elevatorStallPeak / 2);
+    masterElevatorConfig.smartCurrentLimit(Constants.EndgameConstants.elevatorStallPeak);
 
     elevatorRightSpark.configure(masterElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     elevatorLeftSpark.configure(masterElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -35,16 +36,13 @@ public class EndGameSubsystem extends SubsystemBase {
     elevatorLeftSpark.set(-set);
   }
 
-  public void moveElevatorHooks(double set) {
-    elevatorHookSpark.set(set);
-  }
-
   public void stopElevator() {
     elevatorRightSpark.stopMotor();
-    elevatorLeftSpark.stopMotor();
+
   }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
   }
 }

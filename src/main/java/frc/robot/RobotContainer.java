@@ -4,10 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.commands.Throwup;
-import frc.robot.commands.endgamePivot;
+import frc.robot.commands.endgame.endgameHooks;
+import frc.robot.commands.endgame.endgamePivot;
 import frc.robot.commands.intake.IntakeBalls;
 import frc.robot.commands.intake.IntakePivot;
+import frc.robot.commands.intake.Throwup;
 import frc.robot.commands.swerve.HomeTrajectory;
 import frc.robot.commands.swerve.Reset;
 import frc.robot.commands.swerve.SwerveJoystick;
@@ -39,87 +40,96 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
-  public final static Joystick driverJoystick = new Joystick(Constants.OperatorConstants.kDriverControllerPort);
-  public final static Joystick operatorJoystick = new Joystick(Constants.OIConstants.kOperatorControllerPort);
-  public final static CommandXboxController m_driverController = new CommandXboxController(
-      OIConstants.kDriverControllerPort);
-  public final static CommandXboxController m_operatorController = new CommandXboxController(
-      OIConstants.kOperatorControllerPort);
-  public final static SwerveSubsystem swerveSubsystem = new SwerveSubsystem(
-      DrivetrainConstants.ChasisConstants.pidgeonGyro);
-  public final static TurretRotateSubsystem turretRotateSubsystem = new TurretRotateSubsystem();
-  public final static TurretLaunchSubsystem turretLaunchSubsystem = new TurretLaunchSubsystem();
-  public final static SpindexerSubsystem spindexerSubsystem = new SpindexerSubsystem();
-  public final static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  public final static IntakePivotSubsystem intakePivotSubsystem = new IntakePivotSubsystem();
-  public final static EndGameSubsystem endGameSubsystem = new EndGameSubsystem();
-  private final SendableChooser<Command> autoChooser;
+  //Controls
+  public static Joystick driverJoystick = new Joystick(Constants.OperatorConstants.kDriverControllerPort);
+  public static Joystick operatorJoystick = new Joystick(Constants.OIConstants.kOperatorControllerPort);
+  public static CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  public static CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+  
+  public static SwerveSubsystem swerveSubsystem;
+  public static TurretRotateSubsystem turretRotateSubsystem;
+  public static TurretLaunchSubsystem turretLaunchSubsystem;
+  public static SpindexerSubsystem spindexerSubsystem;
+  public static IntakeSubsystem intakeSubsystem;
+  public static IntakePivotSubsystem intakePivotSubsystem;
+  public static EndGameSubsystem endGameSubsystem;
+  private SendableChooser<Command> autoChooser;
 
-  // Manual
-  Command joystickTurret = new ManualJoystickTurretRotate(turretRotateSubsystem);
-  Command manualShot = new Shoot(3500, turretLaunchSubsystem, spindexerSubsystem);
-  Command intake = new IntakeBalls(1, intakeSubsystem);
-  Command outtake = new Throwup(turretLaunchSubsystem, intakeSubsystem, spindexerSubsystem);
-
-  // Automated
-  Command cycleShot = Commands.parallel(
-      new EstimatedShoot(turretLaunchSubsystem, spindexerSubsystem, swerveSubsystem),
-      new TurretTracker(turretRotateSubsystem, swerveSubsystem),
-      new IntakePivot(pivotScenarios.idleUp, intakePivotSubsystem));
-
-  Command intakeUp = new IntakePivot(pivotScenarios.activeUp, intakePivotSubsystem);
-  Command intakeDown = new IntakePivot(pivotScenarios.activeDown, intakePivotSubsystem);
-  Command endgameUp = new endgamePivot(-1, endGameSubsystem);
-  Command endgameDown = new endgamePivot(1, endGameSubsystem);
+    /*
+   * Intaking balls is a negative speed value, Intake pivoting is positive for up negative for down
+   * Check directions of endgame when get to it
+   */
 
   public RobotContainer() {
-    configureBindings();
+    swerveSubsystem = new SwerveSubsystem(DrivetrainConstants.ChasisConstants.pidgeonGyro);
+    intakeSubsystem = new IntakeSubsystem();
+    intakePivotSubsystem = new IntakePivotSubsystem();
+    spindexerSubsystem = new SpindexerSubsystem();
+    turretRotateSubsystem = new TurretRotateSubsystem();
+    turretLaunchSubsystem = new TurretLaunchSubsystem();
+    endGameSubsystem = new EndGameSubsystem();
     autoChooser = AutoBuilder.buildAutoChooser();
+    
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    NamedCommands.registerCommand("Intake Down", intakeDown.withTimeout(1.125));
-    NamedCommands.registerCommand("Intake Up", intakeUp.withTimeout(1.125));
-    NamedCommands.registerCommand("Endgame Down", endgameDown.withTimeout(3.5));
-    NamedCommands.registerCommand("Shoot Targeting", cycleShot);
+    NamedCommands.registerCommand("intake", new IntakeBalls(Constants.speedModes.intake, intakeSubsystem));
+    NamedCommands.registerCommand("intakeUp", new IntakePivot(Constants.speedModes.activeIntakeUp, intakePivotSubsystem).withTimeout(1.125));
+    NamedCommands.registerCommand("intakeDown", new IntakePivot(Constants.speedModes.activeIntakeDown, intakePivotSubsystem).withTimeout(1.125));
+    NamedCommands.registerCommand("endgameDown", new endgamePivot(Constants.speedModes.activeIntakeDown, endGameSubsystem).withTimeout(3.5));
+
+    NamedCommands.registerCommand("autoShoot", Commands.parallel(
+        new EstimatedShoot(turretLaunchSubsystem, spindexerSubsystem, swerveSubsystem),
+        new TurretTracker(turretRotateSubsystem, swerveSubsystem),
+        new IntakePivot(Constants.speedModes.manualIntakeUp, intakePivotSubsystem)));
+
+    configureBindings();
   }
+
 
   private void configureBindings() {
     // Operator Controls
 
     // Manual Turret Control
-    new Trigger(() -> Math.abs(m_operatorController.getRightX()) > 0.0).whileTrue(joystickTurret);
+    new Trigger(() -> Math.abs(m_operatorController.getRightX()) > 0.0)
+        .whileTrue(new ManualJoystickTurretRotate(turretRotateSubsystem));
 
     // Manual Shooting Override
-    m_operatorController.rightTrigger().whileTrue(manualShot);
+    m_operatorController.rightBumper().whileTrue(new Shoot(3500, turretLaunchSubsystem, spindexerSubsystem));
 
     // Manual Intake Controls
-    m_operatorController.leftBumper().onTrue(intakeUp);
-    m_operatorController.leftTrigger().onTrue(intakeDown);
+    m_operatorController.leftBumper().whileTrue(new IntakePivot(0.1875, intakePivotSubsystem));
+    m_operatorController.rightBumper().whileTrue(new IntakePivot(-0.1875, intakePivotSubsystem));
 
     // Automatic Shooting
-    m_operatorController.rightBumper().whileTrue(cycleShot);
+    m_operatorController.rightTrigger().whileTrue(Commands.parallel(
+        new EstimatedShoot(turretLaunchSubsystem, spindexerSubsystem, swerveSubsystem),
+        new TurretTracker(turretRotateSubsystem, swerveSubsystem),
+        new IntakePivot(-0.125, intakePivotSubsystem)));
 
     // Reset Odometry
     m_operatorController.a().onTrue(new Reset(swerveSubsystem).withTimeout(0.1));
 
+    // Hooks
+    m_operatorController.y().whileTrue(new endgameHooks(0.125, endGameSubsystem));
+    m_operatorController.b().whileTrue(new endgameHooks(-0.125, endGameSubsystem));
     // Driver Controls
 
     // Endgame
-    m_driverController.povUp().whileTrue(endgameUp);
-    m_driverController.povDown().whileTrue(endgameDown);
+    m_driverController.povUp().whileTrue(new endgamePivot(1, endGameSubsystem));
+    m_driverController.povDown().whileTrue(new endgamePivot(-1, endGameSubsystem));
 
     // Go to 0,0
     m_driverController.b().whileTrue(new HomeTrajectory(swerveSubsystem));
 
     // Intake
-    m_driverController.rightTrigger().whileTrue(intake);
-    m_driverController.leftTrigger().whileTrue(outtake);
+    m_driverController.rightTrigger().whileTrue(new IntakeBalls(1, intakeSubsystem));
+    m_driverController.leftTrigger().whileTrue(new Throwup(turretLaunchSubsystem, intakeSubsystem, spindexerSubsystem));
 
     // Intake Pivot
     m_driverController.leftBumper()
-        .onTrue(intakeUp.withTimeout(1.25));
+        .onTrue(new IntakePivot(0.25, intakePivotSubsystem).withTimeout(1.25));
     m_driverController.rightBumper()
-        .onTrue(intakeDown.withTimeout(1.25));
+        .onTrue(new IntakePivot(-0.25, intakePivotSubsystem).withTimeout(1.25));
 
     // Driving
     swerveSubsystem.setDefaultCommand(new SwerveJoystick(

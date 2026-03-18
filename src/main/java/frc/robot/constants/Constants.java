@@ -48,6 +48,23 @@ public final class Constants {
      public static final int pivotStall = 40;
   }
 
+  public static class speedModes {
+    public static final double activeIntakeUp = 0.25;
+    public static final double activeIntakeDown = -0.25;
+    public static final double manualIntakeUp = 0.1875;
+    public static final double manualIntakeDown = -0.1875;
+    public static final double idleUp = 0.1875;
+    public static final double idleDown = -0.1875;
+
+    public static final double intake = -1;
+    public static final double outtake = 1;
+    public static final double manualShotRPM = 3500;
+    public static final double endgameHookUp = 0;
+    public static final double endgameHookDown = 0;
+    public static final double endgameUp = 0;
+    public static final double endgameDown = 0;
+  }
+
   public static class TurretConstants {
     public static final int limitSwitchID = 0;
     public static final int turnStall = 5;

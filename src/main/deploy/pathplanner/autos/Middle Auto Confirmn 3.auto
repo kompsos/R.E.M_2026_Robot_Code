@@ -7,18 +7,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake Down"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "To Depot"
           }
         },
@@ -32,12 +20,6 @@
           "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot Targeting"
-                }
-              },
               {
                 "type": "wait",
                 "data": {
