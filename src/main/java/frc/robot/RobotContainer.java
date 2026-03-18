@@ -23,7 +23,6 @@ import frc.robot.subsystems.SpindexerSubsystem;
 import frc.robot.subsystems.endgame.EndGameSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.intake.IntakePivotSubsystem.pivotScenarios;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.turret.TurretLaunchSubsystem;
 import frc.robot.subsystems.turret.TurretRotateSubsystem;

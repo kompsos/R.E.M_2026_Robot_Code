@@ -13,27 +13,25 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 public class EndGameSubsystem extends SubsystemBase {
-  public SparkMax elevatorLeftSpark;
   public SparkMax elevatorRightSpark;
   public SparkMax elevatorHookSpark;
 
-
   /** Creates a new endgame. */
   public EndGameSubsystem() {
-    elevatorLeftSpark = new SparkMax(Constants.EndgameConstants.leftElevatorMotorSparkID, MotorType.kBrushless);
     elevatorRightSpark = new SparkMax(Constants.EndgameConstants.rightElevatorMotorSparkID, MotorType.kBrushless);
     elevatorHookSpark = new SparkMax(Constants.EndgameConstants.elevatorHookMotorSparkID, MotorType.kBrushless);
 
     SparkMaxConfig masterElevatorConfig = new SparkMaxConfig();
-    masterElevatorConfig.smartCurrentLimit(Constants.EndgameConstants.elevatorStallPeak);
+    SparkMaxConfig hookConfig = new SparkMaxConfig();
 
+    hookConfig.smartCurrentLimit(15);
+    masterElevatorConfig.smartCurrentLimit(Constants.EndgameConstants.elevatorStallPeak);
+    elevatorHookSpark.configure(hookConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     elevatorRightSpark.configure(masterElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    elevatorLeftSpark.configure(masterElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void moveElevator(double set) {
     elevatorRightSpark.set(set);
-    elevatorLeftSpark.set(-set);
   }
 
   public void stopElevator() {

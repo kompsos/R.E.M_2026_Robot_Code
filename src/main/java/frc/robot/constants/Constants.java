@@ -38,7 +38,7 @@ public final class Constants {
     public static int elevatorHookMotorSparkID = 0;
 
     public static int elevatorHooksStall = 10;
-    public static int elevatorStallPeak = 40; //Divided between both pulling motors
+    public static int elevatorStallPeak = 40;
   }
 
   public static class IntakeConstants {
