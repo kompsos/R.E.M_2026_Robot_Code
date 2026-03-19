@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
 
-
+      if(RobotContainer.swerveSubsystem != null) {
       SmartDashboard.putData("Swerve Drive", new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
@@ -50,6 +51,8 @@ public class Robot extends TimedRobot {
         builder.addDoubleProperty("Robot Angle", () -> RobotContainer.swerveSubsystem.gyro.getRotation2d().getRadians(), null);
       }
     });
+      }
+
   }
 
   @Override
@@ -93,7 +96,8 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode! */
   @Override
   public void disabledInit() {
-    LimelightHelpers.SetThrottle("limelight-royal", 200);
+    //LimelightHelpers.SetThrottle("limelight-royal", 200);
+    LimelightHelpers.SetThrottle(Constants.VisionConstants.backCamera, 0);
   }
 
   @Override

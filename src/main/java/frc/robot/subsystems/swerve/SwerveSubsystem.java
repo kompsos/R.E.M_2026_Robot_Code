@@ -210,16 +210,10 @@ public class SwerveSubsystem extends SubsystemBase {
     estimatedPosition.update(getRotation2d(), getModulePositions());
     LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.backCamera, getRotation2d().getDegrees(), 0, 0,
         0, 0, 0);
-    LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, 0.322, 0.274, 0.247, 0, 15, 0);
+    LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, -0.322, -0.274, 0.247, 0, 15, 180);
     LimelightHelpers.PoseEstimate megatag2Estimate;
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      megatag2Estimate = LimelightHelpers
-          .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);
-    } else {
-      megatag2Estimate = LimelightHelpers
-          .getBotPoseEstimate_wpiRed_MegaTag2(Constants.VisionConstants.backCamera);
-    }
-
+      megatag2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);
+    
     if (LimelightHelpers.getTargetCount(Constants.VisionConstants.backCamera) > 0) {
       estimatedPosition.addVisionMeasurement(megatag2Estimate.pose, megatag2Estimate.timestampSeconds);
     }

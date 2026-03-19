@@ -67,9 +67,7 @@ public class RobotContainer {
     turretRotateSubsystem = new TurretRotateSubsystem();
     turretLaunchSubsystem = new TurretLaunchSubsystem();
     endGameSubsystem = new EndGameSubsystem();
-    autoChooser = AutoBuilder.buildAutoChooser();
-    
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
     NamedCommands.registerCommand("intake", new IntakeBalls(Constants.speedModes.intake, intakeSubsystem));
     NamedCommands.registerCommand("intakeUp", new IntakePivot(Constants.speedModes.activeIntakeUp, intakePivotSubsystem).withTimeout(1.125));
@@ -81,6 +79,9 @@ public class RobotContainer {
         new TurretTracker(turretRotateSubsystem, swerveSubsystem),
         new IntakePivot(Constants.speedModes.manualIntakeUp, intakePivotSubsystem)));
 
+    autoChooser = AutoBuilder.buildAutoChooser();
+    
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     configureBindings();
   }
 
@@ -93,7 +94,7 @@ public class RobotContainer {
         .whileTrue(new ManualJoystickTurretRotate(turretRotateSubsystem));
 
     // Manual Shooting Override
-    m_operatorController.rightBumper().whileTrue(new Shoot(3500, turretLaunchSubsystem, spindexerSubsystem));
+    m_operatorController.leftTrigger().whileTrue(new Shoot(3500, turretLaunchSubsystem, spindexerSubsystem));
 
     // Manual Intake Controls
     m_operatorController.leftBumper().whileTrue(new IntakePivot(0.1875, intakePivotSubsystem));

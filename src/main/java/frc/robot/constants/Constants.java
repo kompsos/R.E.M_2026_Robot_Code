@@ -33,9 +33,8 @@ public final class Constants {
   }
 
   public static class EndgameConstants {
-    public static int leftElevatorMotorSparkID = 16;
     public static int rightElevatorMotorSparkID = 32;
-    public static int elevatorHookMotorSparkID = 0;
+    public static int elevatorHookMotorSparkID = 16;
 
     public static int elevatorHooksStall = 10;
     public static int elevatorStallPeak = 40;
