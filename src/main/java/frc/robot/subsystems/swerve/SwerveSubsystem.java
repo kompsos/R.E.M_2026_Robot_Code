@@ -210,11 +210,19 @@ public class SwerveSubsystem extends SubsystemBase {
     estimatedPosition.update(getRotation2d(), getModulePositions());
     LimelightHelpers.SetRobotOrientation(Constants.VisionConstants.backCamera, getRotation2d().getDegrees(), 0, 0,
         0, 0, 0);
+    if(DriverStation.getAlliance().get() == Alliance.Red) {
     LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, -0.322, -0.274, 0.247, 0, 15, 180);
-    LimelightHelpers.PoseEstimate megatag2Estimate;
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VisionConstants.backCamera,
+     new int[]{14,13,16,15,9,10,7,12});
+    } else {
+    LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, 0.322, 0.274, 0.247, 0, 15, 0);
+        LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VisionConstants.backCamera,
+     new int[]{29,30,31,32,28,26,25,21,24,23});
+    }
+LimelightHelpers.PoseEstimate megatag2Estimate;
       megatag2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);
     
-    if (LimelightHelpers.getTargetCount(Constants.VisionConstants.backCamera) > 0) {
+    if (LimelightHelpers.getTargetCount(Constants.VisionConstants.backCamera) > 0 && Math.abs(gyro.getAngularVelocityZWorld().getValueAsDouble()) < 720) {
       estimatedPosition.addVisionMeasurement(megatag2Estimate.pose, megatag2Estimate.timestampSeconds);
     }
     Constants.DataLoggingConstants.estimatedField.setRobotPose(estimatedPosition.getEstimatedPosition());

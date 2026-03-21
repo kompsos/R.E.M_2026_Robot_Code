@@ -12,6 +12,7 @@ import frc.robot.commands.intake.Throwup;
 import frc.robot.commands.swerve.HomeTrajectory;
 import frc.robot.commands.swerve.Reset;
 import frc.robot.commands.swerve.SwerveJoystick;
+import frc.robot.commands.turret.CompleteAutoShootCommand;
 import frc.robot.commands.turret.EstimatedShoot;
 import frc.robot.commands.turret.Shoot;
 import frc.robot.commands.turret.ManualJoystickTurretRotate;
@@ -69,15 +70,13 @@ public class RobotContainer {
     endGameSubsystem = new EndGameSubsystem();
 
 
-    NamedCommands.registerCommand("intake", new IntakeBalls(Constants.speedModes.intake, intakeSubsystem));
-    NamedCommands.registerCommand("intakeUp", new IntakePivot(Constants.speedModes.activeIntakeUp, intakePivotSubsystem).withTimeout(1.125));
-    NamedCommands.registerCommand("intakeDown", new IntakePivot(Constants.speedModes.activeIntakeDown, intakePivotSubsystem).withTimeout(1.125));
+    NamedCommands.registerCommand("intake", new IntakeBalls(-Constants.speedModes.intake, intakeSubsystem));
+    NamedCommands.registerCommand("intakeUp", new IntakePivot(-Constants.speedModes.activeIntakeUp, intakePivotSubsystem).withTimeout(1.125));
+    NamedCommands.registerCommand("intakeDown", new IntakePivot(-Constants.speedModes.activeIntakeDown, intakePivotSubsystem).withTimeout(1.125));
     NamedCommands.registerCommand("endgameDown", new endgamePivot(Constants.speedModes.activeIntakeDown, endGameSubsystem).withTimeout(3.5));
 
-    NamedCommands.registerCommand("autoShoot", Commands.parallel(
-        new EstimatedShoot(turretLaunchSubsystem, spindexerSubsystem, swerveSubsystem),
-        new TurretTracker(turretRotateSubsystem, swerveSubsystem),
-        new IntakePivot(Constants.speedModes.manualIntakeUp, intakePivotSubsystem)));
+    NamedCommands.registerCommand("autoShoot", new CompleteAutoShootCommand(swerveSubsystem, turretLaunchSubsystem, turretRotateSubsystem, spindexerSubsystem));
+  
 
     autoChooser = AutoBuilder.buildAutoChooser();
     
@@ -94,7 +93,7 @@ public class RobotContainer {
         .whileTrue(new ManualJoystickTurretRotate(turretRotateSubsystem));
 
     // Manual Shooting Override
-    m_operatorController.leftTrigger().whileTrue(new Shoot(3500, turretLaunchSubsystem, spindexerSubsystem));
+    m_operatorController.leftTrigger().whileTrue(new Shoot(2800, turretLaunchSubsystem, spindexerSubsystem));
 
     // Manual Intake Controls
     m_operatorController.leftBumper().whileTrue(new IntakePivot(0.1875, intakePivotSubsystem));
@@ -104,14 +103,14 @@ public class RobotContainer {
     m_operatorController.rightTrigger().whileTrue(Commands.parallel(
         new EstimatedShoot(turretLaunchSubsystem, spindexerSubsystem, swerveSubsystem),
         new TurretTracker(turretRotateSubsystem, swerveSubsystem),
-        new IntakePivot(-0.125, intakePivotSubsystem)));
+        new IntakePivot(Constants.speedModes.manualIntakeUp, intakePivotSubsystem)));
 
     // Reset Odometry
     m_operatorController.a().onTrue(new Reset(swerveSubsystem).withTimeout(0.1));
 
     // Hooks
-    m_operatorController.y().whileTrue(new endgameHooks(0.125, endGameSubsystem));
-    m_operatorController.b().whileTrue(new endgameHooks(-0.125, endGameSubsystem));
+    m_operatorController.y().whileTrue(new endgameHooks(1, endGameSubsystem));
+    m_operatorController.b().whileTrue(new endgameHooks(-1, endGameSubsystem));
     // Driver Controls
 
     // Endgame
