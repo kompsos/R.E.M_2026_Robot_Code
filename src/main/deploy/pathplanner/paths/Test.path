@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.1900000000000004,
-        "y": 4.0346376
+        "x": 1.7308964646464648,
+        "y": 4.014572072072072
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.666525112748186,
-        "y": 4.146329862375206
+        "x": 2.2074215773946504,
+        "y": 4.126264334447278
       },
       "isLocked": false,
       "linkedName": "Middle Backup"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 5.0,
     "maxAcceleration": 2.5,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 1200.0,

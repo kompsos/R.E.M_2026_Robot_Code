@@ -64,7 +64,7 @@ public final class DrivetrainConstants {
     public static final int defaultStatorLimit = 120;
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5.9436; //https://www.swervedrivespecialties.com/products/mk4-swerve-module
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
-    public static final double maxAccelerationUnitsPerSecond = 2.5;
+    public static final double maxAccelerationUnitsPerSecond = 1.8;
     public static final double maxAngularAccelerationUnitsPerSecond = 3.5;
   }
 

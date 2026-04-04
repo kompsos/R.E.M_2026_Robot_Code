@@ -6,6 +6,7 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,7 +42,7 @@ public class CompleteAutoShootCommand extends Command {
   @Override
   public void execute() {
     Pose2d goalPose2d;
-    
+    Transform2d turretOffset = new Transform2d(-.123462, -.102, new Rotation2d());
 
     if(DriverStation.getAlliance().get() == Alliance.Blue) {
       goalPose2d = new Pose2d(4.620, 4.015, new Rotation2d(0));        
@@ -51,12 +52,13 @@ public class CompleteAutoShootCommand extends Command {
     
     double goalRotation = turretRotate.getTurretGoal(swerve.getEstimatedPose(), goalPose2d);
 
-    double goalRPM = turretLaunch.calculateDistancetoRPM(MathTools.calculateDistance2Points(swerve.getEstimatedPose(), goalPose2d), 0.465);
+    double goalRPM = turretLaunch.calculateDistancetoRPM(MathTools.calculateDistance2Points(swerve.getEstimatedPose(), goalPose2d), 0.52
+    );
     turretLaunch.revUP(goalRPM);
       
     turretRotate.setAngle(goalRotation);
 
-    if((turretLaunch.leftSpark.getEncoder().getVelocity() >= goalRPM - 150) && Math.abs(turretRotate.getTurretAngle()) >= Math.abs(goalRotation)) {
+    if(turretLaunch.leftSpark.getEncoder().getVelocity() >= goalRPM - 150) {
       spindexerSubsystem.spinUp(1);
     } else {
       spindexerSubsystem.spinDown();

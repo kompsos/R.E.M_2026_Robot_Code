@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left"
+            "pathName": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Over Bump"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Static Autos",
+  "folder": null,
   "choreoAuto": false
 }

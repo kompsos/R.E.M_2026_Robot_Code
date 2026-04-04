@@ -4,11 +4,17 @@
 
 package frc.robot;
 
+import java.awt.Color;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +33,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -34,31 +41,42 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
 
-      if(RobotContainer.swerveSubsystem != null) {
+    if (RobotContainer.swerveSubsystem != null) {
       SmartDashboard.putData("Swerve Drive", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("SwerveDrive");
+        @Override
+        public void initSendable(SendableBuilder builder) {
+          builder.setSmartDashboardType("SwerveDrive");
 
-        builder.addDoubleProperty("Front Left Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontLeft.getTurningPosition()), null);
-        builder.addDoubleProperty("Front Left Velocity", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontLeft.getDriveVelocity()), null);
-        builder.addDoubleProperty("Front Right Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontRight.getTurningPosition()), null);
-        builder.addDoubleProperty("Front Right Velocity", () -> Math.toRadians(RobotContainer.swerveSubsystem.frontRight.getDriveVelocity()), null);
-        builder.addDoubleProperty("Back Left Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.backLeft.getTurningPosition()), null);
-        builder.addDoubleProperty("Back Left Velocity", () -> Math.toRadians(RobotContainer.swerveSubsystem.backLeft.getDriveVelocity()), null);
-        builder.addDoubleProperty("Back Right Angle", () -> Math.toRadians(RobotContainer.swerveSubsystem.backRight.getTurningPosition()), null);
-        builder.addDoubleProperty("Back Right Velocity", () ->Math.toRadians(RobotContainer.swerveSubsystem.backRight.getDriveVelocity()), null);
-        builder.addDoubleProperty("Robot Angle", () -> RobotContainer.swerveSubsystem.gyro.getRotation2d().getRadians(), null);
-      }
-    });
-      }
+          builder.addDoubleProperty("Front Left Angle",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.frontLeft.getTurningPosition()), null);
+          builder.addDoubleProperty("Front Left Velocity",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.frontLeft.getDriveVelocity()), null);
+          builder.addDoubleProperty("Front Right Angle",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.frontRight.getTurningPosition()), null);
+          builder.addDoubleProperty("Front Right Velocity",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.frontRight.getDriveVelocity()), null);
+          builder.addDoubleProperty("Back Left Angle",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.backLeft.getTurningPosition()), null);
+          builder.addDoubleProperty("Back Left Velocity",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.backLeft.getDriveVelocity()), null);
+          builder.addDoubleProperty("Back Right Angle",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.backRight.getTurningPosition()), null);
+          builder.addDoubleProperty("Back Right Velocity",
+              () -> Math.toRadians(RobotContainer.swerveSubsystem.backRight.getDriveVelocity()), null);
+          builder.addDoubleProperty("Robot Angle",
+              () -> RobotContainer.swerveSubsystem.gyro.getRotation2d().getRadians(), null);
+        }
+      });
+    }
 
   }
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
   }
+
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics
@@ -71,16 +89,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-      SmartDashboard.putNumber("TurretTurnRequirement", 
+    SmartDashboard.putNumber("TurretTurnRequirement",
         RobotContainer.turretRotateSubsystem.getTurretGoal(
-          RobotContainer.swerveSubsystem.getEstimatedPose(), new Pose2d(4.620,4.015, new Rotation2d(0)))
-      );
+            RobotContainer.swerveSubsystem.getEstimatedPose(), new Pose2d(4.620, 4.015, new Rotation2d(0))));
 
-      SmartDashboard.putNumber("TurretRPMRequirement", 
+    SmartDashboard.putNumber("TurretRPMRequirement",
         RobotContainer.turretLaunchSubsystem.calculateDistancetoRPM(
-          MathTools.calculateDistance2Points(RobotContainer.swerveSubsystem.getEstimatedPose(), new Pose2d(4.620, 4.015, new Rotation2d(0))
-        ), 0.8)
-      );
+            MathTools.calculateDistance2Points(RobotContainer.swerveSubsystem.getEstimatedPose(),
+                new Pose2d(4.620, 4.015, new Rotation2d(0))),
+            0.8));
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -96,7 +113,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode! */
   @Override
   public void disabledInit() {
-    //LimelightHelpers.SetThrottle("limelight-royal", 200);
+    // LimelightHelpers.SetThrottle("limelight-royal", 200);
     LimelightHelpers.SetThrottle(Constants.VisionConstants.backCamera, 0);
   }
 

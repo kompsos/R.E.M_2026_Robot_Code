@@ -18,7 +18,7 @@ public class SpindexerSubsystem extends SubsystemBase {
   public SparkMax indexer;
   public SpindexerSubsystem() {
     kicker550 = new SparkMax(5, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    indexer = new SparkMax(2, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+    indexer = new SparkMax(32, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config.smartCurrentLimit(40);
     indexer.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -26,7 +26,7 @@ public class SpindexerSubsystem extends SubsystemBase {
   }
 
   public void spinUp(double speed) {
-    kicker550.set(-speed);
+    kicker550.set(-(speed / 1.125));
     indexer.set(-speed);
   }
 

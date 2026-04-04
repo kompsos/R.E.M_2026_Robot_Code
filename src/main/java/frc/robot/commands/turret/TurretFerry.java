@@ -13,18 +13,22 @@ import frc.robot.MathTools;
 import frc.robot.subsystems.SpindexerSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.turret.TurretLaunchSubsystem;
+import frc.robot.subsystems.turret.TurretRotateSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class EstimatedShoot extends Command {
-  TurretLaunchSubsystem turret;
+public class TurretFerry extends Command {
+  /** Creates a new CompleteAutoShootCommand. */
   SwerveSubsystem swerve;
-  double requiredSpeed;
+  TurretLaunchSubsystem turretLaunch;
+  TurretRotateSubsystem turretRotate;
   SpindexerSubsystem spindexerSubsystem;
-  public EstimatedShoot(TurretLaunchSubsystem turret, SpindexerSubsystem spindexerSubsystem, SwerveSubsystem swerve) {
-    this.turret = turret;
+
+  public TurretFerry(SwerveSubsystem swerve, TurretLaunchSubsystem turretLaunch, TurretRotateSubsystem turretRotateSubsystem, SpindexerSubsystem spindexerSubsystem) {
     this.swerve = swerve;
+    this.turretLaunch = turretLaunch;
+    this.turretRotate = turretRotateSubsystem;
     this.spindexerSubsystem = spindexerSubsystem;
-    addRequirements(turret, spindexerSubsystem);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -37,27 +41,35 @@ public class EstimatedShoot extends Command {
   @Override
   public void execute() {
     Pose2d goalPose2d;
+    
+
     if(DriverStation.getAlliance().get() == Alliance.Blue) {
-      goalPose2d = new Pose2d(4.620, 4.015, new Rotation2d(0));        
+      goalPose2d = new Pose2d(1.528, 4.015, new Rotation2d(0));        
     } else {
-      goalPose2d = new Pose2d(11.920, 4.015, new Rotation2d(0));   
+      goalPose2d = new Pose2d(15.242, 4.015, new Rotation2d(0));   
     }
     
-    double goalRPM = turret.calculateDistancetoRPM(MathTools.calculateDistance2Points(swerve.getEstimatedPose(), goalPose2d), 0.38);
-    turret.revUP(goalRPM);
+    double goalRotation = turretRotate.getTurretGoal(swerve.getEstimatedPose(), goalPose2d);
+
+    double goalRPM = turretLaunch.calculateDistancetoRPM(MathTools.calculateDistance2Points(swerve.getEstimatedPose(), goalPose2d), 0.465);
+    turretLaunch.revUP(goalRPM);
       
-    if(turret.leftSpark.getEncoder().getVelocity() >= goalRPM) {
+    turretRotate.setAngle(goalRotation);
+
+    if((turretLaunch.leftSpark.getEncoder().getVelocity() >= goalRPM - 150)) {
       spindexerSubsystem.spinUp(1);
     } else {
       spindexerSubsystem.spinDown();
     }
+
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     spindexerSubsystem.spinDown();
-    turret.revDown();
+    turretLaunch.revDown();
   }
 
   // Returns true when the command should end.

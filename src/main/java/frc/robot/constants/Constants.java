@@ -32,14 +32,6 @@ public final class Constants {
     public static final double kDeadband = 0.06;
   }
 
-  public static class EndgameConstants {
-    public static int rightElevatorMotorSparkID = 32;
-    public static int elevatorHookMotorSparkID = 16;
-
-    public static int elevatorHooksStall = 10;
-    public static int elevatorStallPeak = 40;
-  }
-
   public static class IntakeConstants {
      public static final int intakePivotSparkID = 40;
      public static final int intakeRollerSparkID = 30;
@@ -58,24 +50,20 @@ public final class Constants {
     public static final double intake = -1;
     public static final double outtake = 1;
     public static final double manualShotRPM = 3500;
-    public static final double endgameHookUp = 0;
-    public static final double endgameHookDown = 0;
-    public static final double endgameUp = 0;
-    public static final double endgameDown = 0;
   }
 
   public static class TurretConstants {
     public static final int limitSwitchID = 0;
-    public static final int turnStall = 5;
+    public static final int turnStall = 40;
     public static final int launchStall = 60;
     public static final int rotateSparkID = 62;
     public static final int leftFlywheelSparkID = 8;
     public static final int rightFlywheelSparkID = 14;
-    public static final double turnConversionFactor = (0.04 * 0.1323);
-    public static final double maxRotationAmount = 1;
+    public static final double turnConversionFactor = (0.111111 * /*0.1323*/ 0.390625);
+    public static final double maxRotationAmount = 0.5;
     public static final boolean softLimitsEnabled = true;
 
-    public static final double rotateP = 90;
+    public static final double rotateP = 0.1;
     public static final double rotateI = 0;
     public static final double rotateD = 0;
 

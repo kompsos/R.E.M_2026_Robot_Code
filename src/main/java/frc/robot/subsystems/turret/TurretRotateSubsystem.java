@@ -9,18 +9,23 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class TurretRotateSubsystem extends SubsystemBase {
   public SparkMax rotateSpark;
-  DigitalInput limitSwitch = new DigitalInput(Constants.TurretConstants.limitSwitchID);
+  //DigitalInput limitSwitch = new DigitalInput(Constants.TurretConstants.limitSwitchID);
 
   /** Creates a new TurretSubsystem. */
   public TurretRotateSubsystem() {   
@@ -34,16 +39,22 @@ public class TurretRotateSubsystem extends SubsystemBase {
     SoftLimitConfig softLimitConfig = new SoftLimitConfig();
     softLimitConfig.forwardSoftLimit(Constants.TurretConstants.maxRotationAmount);
     softLimitConfig.reverseSoftLimit(-Constants.TurretConstants.maxRotationAmount);
-
+    
     softLimitConfig.forwardSoftLimitEnabled(Constants.TurretConstants.softLimitsEnabled);
     softLimitConfig.reverseSoftLimitEnabled(Constants.TurretConstants.softLimitsEnabled);
+    
+    basicSparkMaxConfig.closedLoop.outputRange(-0.5, 0.5);
     basicSparkMaxConfig.closedLoop.p(Constants.TurretConstants.rotateP);
     basicSparkMaxConfig.closedLoop.i(Constants.TurretConstants.rotateI);
     basicSparkMaxConfig.closedLoop.d(Constants.TurretConstants.rotateD);
-    basicSparkMaxConfig.closedLoop.outputRange(
-      -Constants.TurretConstants.maxRotationAmount, Constants.TurretConstants.maxRotationAmount
-      );
+    
+    basicSparkMaxConfig.closedLoop.maxMotion.cruiseVelocity(250);
+    basicSparkMaxConfig.closedLoop.maxMotion.maxAcceleration(80);
+    basicSparkMaxConfig.closedLoop.maxMotion.allowedProfileError(0.0027);
+    basicSparkMaxConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
 
+    basicSparkMaxConfig.closedLoop.feedForward.kS(1.5);
+    basicSparkMaxConfig.closedLoop.feedForward.kA(2);
     basicSparkMaxConfig.apply(softLimitConfig);
     rotateSpark.configure(basicSparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -53,11 +64,10 @@ public class TurretRotateSubsystem extends SubsystemBase {
   }
 
   public double getTurretGoal(Pose2d robotPose2d, Pose2d goalPoint) {
-    double x = goalPoint.getX() - robotPose2d.getX();
-    double y = goalPoint.getY() - robotPose2d.getY();
+    ChassisSpeeds chassis = RobotContainer.swerveSubsystem.getRobotRelativeSpeeds();
+    double x = (goalPoint.getX()) - robotPose2d.getX();
+    double y = (goalPoint.getY()) - robotPose2d.getY();
 
-    /*Goal angle is what the robot would need to turn too,
-     do not use this, use turretGoal*/
     double goalAngle = Math.atan(y / x) * (360/ (2*Math.PI) );
     if (robotPose2d.getX() > goalPoint.getX())
       goalAngle += 180;
@@ -70,9 +80,8 @@ public class TurretRotateSubsystem extends SubsystemBase {
     if(turretGoal > 180) 
       turretGoal -= 360;
     
-
         turretGoal += 180;
-    return turretGoal;
+    return -turretGoal;
   }
 
   public void linearRotate(double speed) {
@@ -89,11 +98,7 @@ public class TurretRotateSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(!limitSwitch.get()) {
-        rotateSpark.getEncoder().setPosition(0);
-    }
-
     SmartDashboard.putNumber("Turret Angle", (getTurretAngle()));
-    SmartDashboard.putBoolean("TurretLimit", limitSwitch.get());
+    //SmartDashboard.putBoolean("TurretLimit", limitSwitch.get());
   }
 }

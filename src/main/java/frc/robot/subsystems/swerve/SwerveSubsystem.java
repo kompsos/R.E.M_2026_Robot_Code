@@ -71,6 +71,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getEstimatedPose() {
     return estimatedPosition.getEstimatedPosition();
+    
   }
 
   public SwerveSubsystem(int gyroPort) {
@@ -84,19 +85,19 @@ public class SwerveSubsystem extends SubsystemBase {
         new Translation2d(0.279, -0.279),
         new Translation2d(-0.279, 0.279),
         new Translation2d(-0.279, -0.279)), getRotation2d(), getModulePositions(), getPose(),
-        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)), VecBuilder.fill(.5, .5, 9999999));
+        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)), VecBuilder.fill(.25, .25, Units.degreesToRadians(10)));
 
     speed_chooser.addOption("Fast", DrivetrainConstants.ChasisConstants.fast);
     speed_chooser.addOption("Slow", DrivetrainConstants.ChasisConstants.slow);
     speed_chooser.addOption("Slowest", DrivetrainConstants.ChasisConstants.slowest);
     speed_chooser.addOption("Precision", DrivetrainConstants.ChasisConstants.precision);
-    speed_chooser.setDefaultOption("Default", DrivetrainConstants.ChasisConstants.fast);
+    speed_chooser.setDefaultOption("Default", DrivetrainConstants.ChasisConstants.normal);
     SmartDashboard.putData("Swerve Speed", speed_chooser);
 
     field_oriented_Chooser.addOption("Robot", false);
     field_oriented_Chooser.setDefaultOption("Field", true);
     SmartDashboard.putData("Robot Oritentation", field_oriented_Chooser);
-
+    
     try {
       config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
@@ -105,8 +106,8 @@ public class SwerveSubsystem extends SubsystemBase {
           this::getRobotRelativeSpeeds,
           (speeds, feedforwards) -> driveRobotRelative(speeds),
           new PPHolonomicDriveController(
-              new PIDConstants(0.02, 0.0, 0.0),
-              new PIDConstants(0.01, 0.0, 0.0)),
+              new PIDConstants(0.015, 0.0, 0.0),
+              new PIDConstants(0.0135, 0.0, 0.0)),
           config,
           () -> {
             var alliance = DriverStation.getAlliance();
@@ -213,11 +214,11 @@ public class SwerveSubsystem extends SubsystemBase {
     if(DriverStation.getAlliance().get() == Alliance.Red) {
     LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, -0.322, -0.274, 0.247, 0, 15, 180);
     LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VisionConstants.backCamera,
-     new int[]{14,13,16,15,9,10,7,12});
+     new int[]{16,15,14,13,7,9,10,12,8,5,11,2,1,4,3});
     } else {
     LimelightHelpers.setCameraPose_RobotSpace(Constants.VisionConstants.backCamera, 0.322, 0.274, 0.247, 0, 15, 0);
         LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VisionConstants.backCamera,
-     new int[]{29,30,31,32,28,26,25,21,24,23});
+     new int[]{23,24,25,26,28,29,30,31,32,22,21,20,19,17,18});
     }
 LimelightHelpers.PoseEstimate megatag2Estimate;
       megatag2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VisionConstants.backCamera);

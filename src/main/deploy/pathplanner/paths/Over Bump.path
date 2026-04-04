@@ -3,37 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 5.937
+        "x": 2.6127020202020206,
+        "y": 2.3401010101010105
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6747023872885067,
-        "y": 5.951953057448816
+        "x": 2.38193278943279,
+        "y": 2.4362548562548576
       },
       "isLocked": false,
-      "linkedName": "Depot Right"
+      "linkedName": "ms1"
     },
     {
       "anchor": {
-        "x": 1.0,
-        "y": 5.937
+        "x": 7.880631313131314,
+        "y": 1.0002146464646477
       },
       "prevControl": {
-        "x": 0.6448225935481263,
-        "y": 5.931340150789735
+        "x": 6.414772727272728,
+        "y": 2.8897979797979803
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 5.0,
     "maxAcceleration": 2.5,
     "maxAngularVelocity": 120.0,
     "maxAngularAcceleration": 1200.0,
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Right Auto",
+  "folder": "Middle Bump Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }
